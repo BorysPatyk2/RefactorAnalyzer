@@ -46,14 +46,43 @@ fix does not update call sites.
 
 Both shipping projects target .NET Standard 2.0. The tests target .NET 9.
 
-## Build and test
+## Build, test, and package
 
 Install a .NET 9 or newer SDK, then run:
 
 ```powershell
 dotnet restore RefactorAnalyzer.sln
 dotnet test RefactorAnalyzer.sln --configuration Release
+dotnet pack src/RefactorAnalyzer.Package/RefactorAnalyzer.Package.csproj --configuration Release
 ```
+
+The package is written to `artifacts/packages/RefactorAnalyzer.0.1.0.nupkg`.
+It contains the analyzer and code-fix assemblies under `analyzers/dotnet/cs`, so
+NuGet-enabled C# projects discover them automatically.
+
+## Install a local package
+
+Point `dotnet` at the folder that contains the generated `.nupkg` and add the
+package to each C# project that should use the analyzer:
+
+```powershell
+dotnet add path/to/CompanyProject.csproj package RefactorAnalyzer `
+  --version 0.1.0 `
+  --source C:\absolute\path\to\RefactorAnalyzer\artifacts\packages
+```
+
+The equivalent project entry is:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="RefactorAnalyzer" Version="0.1.0" PrivateAssets="all" />
+</ItemGroup>
+```
+
+When editing the project file directly, register `artifacts/packages` as a
+package source in the solution's `NuGet.Config` or restore with the `--source`
+option. `PrivateAssets="all"` keeps this development-time dependency from
+flowing to consumers of the company project.
 
 The analyzer currently contains one informational diagnostic:
 
@@ -63,6 +92,5 @@ The analyzer currently contains one informational diagnostic:
 
 ## Current scope
 
-This repository contains the analyzer, code fix, and automated tests. Packaging
-as a NuGet package or Visual Studio extension is intentionally left for a later
-step.
+This repository contains the analyzer, code fix, automated tests, and a local
+NuGet packaging project. The package is not published to an external feed.

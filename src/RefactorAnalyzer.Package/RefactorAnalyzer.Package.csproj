@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>true</IsPackable>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+
+    <PackageId>RefactorAnalyzer</PackageId>
+    <Version>0.1.0</Version>
+    <Title>RefactorAnalyzer</Title>
+    <Authors>RefactorAnalyzer contributors</Authors>
+    <Description>Roslyn analyzer and code fix for C# methods that directly mutate their sole reference-type parameter.</Description>
+    <PackageTags>roslyn;analyzer;codefix;csharp;refactoring</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/BorysPatyk2/RefactorAnalyzer</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/BorysPatyk2/RefactorAnalyzer.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Initial release containing diagnostic RA0001 and its code fix.</PackageReleaseNotes>
+    <PackageOutputPath>$(MSBuildThisFileDirectory)..\..\artifacts\packages</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\RefactorAnalyzer\RefactorAnalyzer.csproj"
+                      PrivateAssets="all"
+                      ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\RefactorAnalyzer.CodeFixes\RefactorAnalyzer.CodeFixes.csproj"
+                      PrivateAssets="all"
+                      ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\RefactorAnalyzer\bin\$(Configuration)\netstandard2.0\RefactorAnalyzer.dll"
+          Pack="true"
+          PackagePath="analyzers/dotnet/cs" />
+    <None Include="..\RefactorAnalyzer.CodeFixes\bin\$(Configuration)\netstandard2.0\RefactorAnalyzer.CodeFixes.dll"
+          Pack="true"
+          PackagePath="analyzers/dotnet/cs" />
+    <None Include="..\..\README.md"
+          Pack="true"
+          PackagePath="\" />
+  </ItemGroup>
+</Project>
